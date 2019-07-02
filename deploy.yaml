@@ -1,0 +1,176 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-service
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  selector:
+    app: client
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-service
+spec:
+  ports:
+  - name: grpc
+    port: 5000
+    targetPort: 5000
+  selector:
+    app: server
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: client-v1
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: client
+        version: v1.0.0
+    spec:
+      containers:
+      - command:
+        - /client
+        image: r.cfcr.io/akishitara/akishitara/test:v1.0.0
+        imagePullPolicy: Always
+        name: client
+        ports:
+        - containerPort: 5000
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: client-v2
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: client
+        version: v2.0.0
+    spec:
+      containers:
+      - command:
+        - /client
+        image: r.cfcr.io/akishitara/akishitara/test:v2.0.0
+        imagePullPolicy: Always
+        name: client
+        ports:
+        - containerPort: 5000
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: server
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: server
+        version: v3.0.0
+    spec:
+      containers:
+      - command:
+        - /server
+        image: r.cfcr.io/akishitara/akishitara/test:v4.0.2
+        imagePullPolicy: Always
+        name: server
+        ports:
+        - containerPort: 5000
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: client-service
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: client-service
+          servicePort: 80
+        path: /
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: redis-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis
+        version: v1.0.0
+    spec:
+      containers:
+      - name: redis
+        image: redis
+        ports:
+        - containerPort: 6379
+          name: redis
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: redis-v2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis
+        version: v2.0.0
+    spec:
+      containers:
+      - name: redis
+        image: redis
+        ports:
+        - containerPort: 6379
+          name: redis

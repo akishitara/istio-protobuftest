@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: server
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: server
+          image: r.cfcr.io/akishitara/akishitara/test:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 5000
+          command:
+          - /server

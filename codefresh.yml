@@ -1,0 +1,43 @@
+version: '1.0'
+steps:
+  #CodeTest:
+  #  image: golang:1.10
+  #  commands:
+  #    - cd src
+  #    - go get -u google.golang.org/grpc github.com/golang/protobuf/protoc-gen-go github.com/BurntSushi/toml
+  #    - apt update && apt install -q -y unzip 
+  #    - wget https://github.com/google/protobuf/releases/download/v3.5.0/protoc-3.5.0-linux-x86_64.zip && unzip protoc-3.5.0-linux-x86_64.zip
+  #    - mv bin/protoc /usr/bin/ && chmod +x /usr/bin/protoc
+  #    - protoc --proto_path=. --go_out=plugins=grpc:./ protocol/protocol.proto
+  #    - cd src/server ; go test server.go
+  #    - cd src/client ; go test client.go
+
+  BuildingDockerImage:
+    title: Building Docker Image
+    type: build
+    image_name: akishitara/test
+    working_directory: ./
+    tag: '${{CF_BRANCH_TAG_NORMALIZED}}'
+    dockerfile: Dockerfile
+
+  TestingDockerImage:
+    perform_tests:
+    image: r.cfcr.io/akishitara/akishitara/test:${{CF_BRANCH}}
+    working_directory: ${{main_clone}}
+    description: Performing unit tests...
+    commands:
+      - ls /server
+
+  DeployToDevelopment:
+    image: codefresh/cf-deploy-kubernetes:latest
+    working-directory: ${{main_clone}}
+    commands:
+      - apk update && apk upgrade && apk add --no-cache ca-certificates && update-ca-certificates || true
+      - apk add -U wget ca-certificates openssl
+      - wget --no-check-certificate https://github.com/kubernetes-sigs/kustomize/releases/download/v1.0.3/kustomize_1.0.3_linux_amd64 -O /usr/bin/kustomize && chmod +x /usr/bin/kustomize
+      - /usr/bin/kustomize build deploy/overlays/development > deploy.yaml
+      - sed -i -- "s/\:latest/\:${{CF_BRANCH}}/g" deploy.yaml
+      - /cf-deploy-kubernetes deploy.yaml
+    environment:
+      - KUBECONTEXT=test@shitara
+      - KUBERNETES_NAMESPACE=test

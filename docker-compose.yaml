@@ -1,0 +1,18 @@
+version: "3"
+services:
+  server:
+    image: test:latest
+    expose:
+      - "50000"
+    ports:
+      - "24224:24224"
+    links:
+      - client
+    command: 
+      - /server
+  client:
+    image: test:latest
+    ports:
+      - 80:50080
+    command: 
+      - /client 

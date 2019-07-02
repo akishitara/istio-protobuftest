@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package books;
+
+service BooksServer {
+	rpc SearchTitle (BooksRequest) returns (BooksReply){}
+}
+
+message BooksRequest{
+	string name = 1;
+	int32  page = 2;
+}
+
+message BooksReply {
+	string title = 1;
+}

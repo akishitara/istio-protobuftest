@@ -1,0 +1,8 @@
+bases:
+- ../../base
+patches:
+- healthcheck.yaml
+- resources.yaml
+- server_resources.yaml
+- client_resources.yaml
+#namePrefix: development-

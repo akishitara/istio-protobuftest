@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: client2
+spec:
+  replicas: 1
+  template:
+    spec:  
+      containers:
+      - name: client
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi

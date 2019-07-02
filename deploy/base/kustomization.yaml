@@ -1,0 +1,9 @@
+#commonLabels:
+#  app: test-service
+
+resources:
+- server_deployment.yaml
+- server_service.yaml
+- client_deployment.yaml
+- client_service.yaml
+- ingress.yaml

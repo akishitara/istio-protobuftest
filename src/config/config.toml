@@ -1,0 +1,11 @@
+[server]
+address = "server-service.test.svc"
+port = 5000
+
+[client]
+address = "client"
+port = 80
+
+[redis]
+address = "redis.test.svc"
+port = 6379
