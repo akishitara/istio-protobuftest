@@ -1,8 +1,4 @@
-istioとprotobufのをつかったマイクロサービスのテスト
+istio-protobuftest
 ============
 
-Usage
-------------
-
-sample
-------------
+istioとprotobufのをつかったマイクロサービスのテスト
