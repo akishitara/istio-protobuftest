@@ -17,7 +17,7 @@ spec:
         - name: regcred
       containers:
         - name: server
-          image: r.cfcr.io/akishitara/akishitara/test:latest
+          image: akishitara1225/istio-protobuftest
           imagePullPolicy: Always
           ports:
           - containerPort: 5000

@@ -7,3 +7,7 @@ resources:
 - client_deployment.yaml
 - client_service.yaml
 - ingress.yaml
+
+imageTags:
+  - name: akishitara1225/istio-protobuftest
+    newTag: latest

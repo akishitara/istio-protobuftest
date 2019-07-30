@@ -10,7 +10,8 @@ ADD ./ /usr/src/test
 WORKDIR /usr/src/test/src/
 RUN go get -u google.golang.org/grpc \
               github.com/golang/protobuf/protoc-gen-go \
-              github.com/BurntSushi/toml
+              github.com/BurntSushi/toml \
+              github.com/gomodule/redigo/redis
 RUN protoc --proto_path=. --go_out=plugins=grpc:./ protocol/protocol.proto
 RUN cd /usr/src/test/src/server ; go build server.go
 RUN cd /usr/src/test/src/client ; go build client.go
