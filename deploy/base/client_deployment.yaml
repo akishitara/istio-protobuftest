@@ -17,7 +17,7 @@ spec:
         - name: regcred
       containers:
         - name: client
-          image: akishitara1225/istio-protobuftest
+          image: akishitara/istio-protobuftest
           imagePullPolicy: Always
           ports:
           - containerPort: 5000

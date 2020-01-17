@@ -9,5 +9,5 @@ resources:
 - ingress.yaml
 
 imageTags:
-  - name: akishitara1225/istio-protobuftest
+  - name: akishitara/istio-protobuftest
     newTag: latest
